@@ -21,14 +21,14 @@ def add_contact(args, book: AddressBook):
 
 @input_error
 def change_contact(args, book):
+    name, old_phone, new_phone = args
+    record = book.find(name)
 
-    name, phone = args
-    try:
-        record = book.data[name]
-    except KeyError:
+    if not record:
         return "Contact not found."
-    record.phones = [Phone(phone)]
-    return "Phone number updated."
+    for phone in record.phones:
+        record.edit_phone(old_phone, new_phone)
+        return "Phone number updated."
 
 
 @input_error
@@ -38,15 +38,16 @@ def show_phone(args, book):
     record = book.find(name)
     if not record:
         return "Contact not found."
-    return f"{name}: {record.phones[0].value}"
-
+    
+    return f"{name}: {', '.join(p.value for p in record.phones)}"
+    
 
 @input_error
 def show_all(book):
-
+    
     print("Your contacts:")
-    for record in book.data.values():  
-        print(f"{record.name.value}: {', '.join(p.value for p in record.phones)}")
+    for record in book.data.values(): 
+        print(f"{record.name.value}: {', '.join(p.value for p in record.phones)}, Birthday: {record.birthday}")
 
 
 @input_error
@@ -54,23 +55,13 @@ def add_birthday(args, book):
     
     name, b_date = args
 
-    try:
-
-        b_day = datetime.strptime(b_date, "%d.%m.%Y")
-        if b_day.year < 1900 or b_day.year > (datetime.now() - timedelta(days=1830)).year:
-            raise ValueError
-
-    except ValueError as e:
-        return "Invalid date format. Use DD.MM.YYYY. Year should be between 1900 and 2021."
-
     record = book.get(name)
     if record:
         try:
             record.add_birthday(b_date)
-        except ValueError as e:
-            return "Invalid date format. Use DD.MM.YYYY."
-        
-        return "Birthday added."
+            return "Birthday added."
+        except ValueError:
+            return "Invalid date format or date in the future"
     else:
         return "Contact not found."
     

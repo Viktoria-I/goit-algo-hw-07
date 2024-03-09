@@ -66,6 +66,7 @@ class Record:
     
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
+        
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -74,9 +75,12 @@ class Birthday(Field):
     def __init__(self, value):
         super().__init__(value)
         try:
-            self.value = datetime.strptime(value, "%d.%m.%Y")
+            value = datetime.strptime(value, "%d.%m.%Y")
+            if value > datetime.now():
+                raise ValueError
         except ValueError:
-            raise ValueError("Invalid date format. Use DD.MM.YYYY")
+            raise ValueError("Invalid date format or date in the future")
+        self.value = value
         
     def __str__(self):
         return self.value.strftime("%d.%m.%Y")    

@@ -32,8 +32,8 @@ def main():
         change <name> <phone>: change the phone number of a contact
         phone <name>: show the phone number of a contact
         all: show all contacts
-        add_birthday <name> <birthday>: add a birthday to a contact
-        show_birthday <name>: show the birthday of a contact
+        add-birthday <name> <birthday>: add a birthday to a contact
+        show-birthday <name>: show the birthday of a contact
         birthdays: show upcoming birthdays
         help: show available commands
         exit or close: close the program
@@ -59,11 +59,11 @@ def main():
                 show_all(book)
             print()
 
-        elif command == "add_birthday":
+        elif command == "add-birthday":
             print(add_birthday(args, book))
             print()
 
-        elif command == "show_birthday":
+        elif command == "show-birthday":
             print(show_birthday(args, book))
             print()
 
